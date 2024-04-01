@@ -8,11 +8,13 @@ import pandas as pd
 
 # Função para conectar ao banco de dados e verificar as credenciais do usuário
 def login(usuario, senha):
+    conexao = None
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway',
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci'
@@ -31,17 +33,18 @@ def login(usuario, senha):
         print("Erro ao conectar ao MySQL", e)
         return False, ""
     finally:
-        if conexao.is_connected():
-            cursor.close()
+        if conexao and conexao.is_connected():
             conexao.close()
 
 # Função para pegar usuários únicos
 def pegar_valores_unicos():
+    conexao = None 
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway',
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci'
@@ -51,22 +54,23 @@ def pegar_valores_unicos():
             query = "SELECT DISTINCT nome FROM dados"
             cursor.execute(query)
             valores_unicos = cursor.fetchall()
-            return [valor[0] for valor in valores_unicos]  # Retorna uma lista de valores únicos
+            return [valor[0] for valor in valores_unicos] 
     except Error as e:
         print("Erro ao conectar ao MySQL", e)
         return []
     finally:
-        if conexao.is_connected():
-            cursor.close()
+        if conexao and conexao.is_connected():
+            cursor.close()  
             conexao.close()
 
 # Função para inserir solicitação
 def inserir_solicitacao(solicitante, data, colaborador, cc, data_inicio, data_termino, diarias, observacao, data_pag, banco_pag):
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway',
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci'
@@ -112,9 +116,10 @@ def inserir_solicitacao(solicitante, data, colaborador, cc, data_inicio, data_te
 def buscar_solicitacoes(solicitante=None, colaborador=None):
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway',
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci'
@@ -141,9 +146,10 @@ def buscar_solicitacoes(solicitante=None, colaborador=None):
 def buscar_solicitantes():
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway'
         )
         cursor = conexao.cursor()
@@ -157,9 +163,10 @@ def buscar_solicitantes():
 def buscar_colaboradores():
     try:
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway'
         )
         cursor = conexao.cursor()
@@ -174,9 +181,10 @@ def registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_altera
     try:
         # Criando uma nova conexão dentro da função
         conexao = mysql.connector.connect(
-            host='roundhouse.proxy.rlwy.net',
+            host='viaduct.proxy.rlwy.net',
             user='root',
-            password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
             database='railway',
             charset='utf8mb4',
             collation='utf8mb4_unicode_ci'
@@ -201,9 +209,10 @@ def registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_altera
 # Busca historico
 def buscar_historico():
     conexao = mysql.connector.connect(
-        host='roundhouse.proxy.rlwy.net',
+        host='viaduct.proxy.rlwy.net',
         user='root',
-        password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+        port=58278,
+        password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
         database='railway',
         charset='utf8mb4',
         collation='utf8mb4_unicode_ci'
@@ -228,6 +237,10 @@ if 'login_status' not in st.session_state:
 
 # Tela de login
 if not st.session_state['login_status']:
+
+    st.title(':blue[Sistema de Gestão de Viagem]')
+    st.markdown('Sistema criado para gerir solicitações de adiantamento para viagens')
+
     st.sidebar.title("Login 🔐")
     usuario = st.sidebar.text_input("Usuário")
     senha = st.sidebar.text_input("Senha", type="password")
@@ -320,9 +333,10 @@ if st.session_state['login_status']:
 
                 # Conecta ao banco de dados para obter valor_diaria
                 conexao = mysql.connector.connect(
-                    host='roundhouse.proxy.rlwy.net',
+                    host='viaduct.proxy.rlwy.net',
                     user='root',
-                    password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+                    port=58278,
+                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
                     database='railway',
                     charset='utf8mb4',
                     collation='utf8mb4_unicode_ci'
@@ -393,9 +407,10 @@ if st.session_state['login_status']:
             # Função para buscar IDs de solicitações
             def buscar_ids_solicitacoes(solicitante=None, colaborador=None):
                 with mysql.connector.connect(
-                    host='roundhouse.proxy.rlwy.net',
+                    host='viaduct.proxy.rlwy.net',
                     user='root',
-                    password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+                    port=58278,
+                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
                     database='railway',
                 ) as conexao:
                     with conexao.cursor() as cursor:
@@ -417,9 +432,10 @@ if st.session_state['login_status']:
             # Função para buscar dados da solicitação por ID
             def buscar_dados_solicitacao_por_id(id_solicitacao):
                 with mysql.connector.connect(
-                    host='roundhouse.proxy.rlwy.net',
+                    host='viaduct.proxy.rlwy.net',
                     user='root',
-                    password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+                    port=58278,
+                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
                     database='railway',
                 ) as conexao:
                     df_solicitacao = pd.read_sql(f"SELECT * FROM adiantamento WHERE idadiantamento = {id_solicitacao}", conexao)  # Corrigido para o nome correto da coluna
@@ -479,9 +495,10 @@ if st.session_state['login_status']:
 
                             # Conecta ao banco de dados para obter valor_diaria
                             conexao = mysql.connector.connect(
-                                host='roundhouse.proxy.rlwy.net',
+                                host='viaduct.proxy.rlwy.net',
                                 user='root',
-                                password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+                                port=58278,
+                                password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
                                 database='railway',
                                 charset='utf8mb4',
                                 collation='utf8mb4_unicode_ci'
@@ -501,9 +518,10 @@ if st.session_state['login_status']:
                         if st.button("Salvar Alterações"):
                             try:
                                 conexao = mysql.connector.connect(
-                                    host='roundhouse.proxy.rlwy.net',
+                                    host='viaduct.proxy.rlwy.net',
                                     user='root',
-                                    password='RyogwwDyJOzNNRRtqtaApKfnlsyKqHXq',
+                                    port=58278,
+                                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
                                     database='railway'
                                 )
                                 cursor = conexao.cursor()
