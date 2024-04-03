@@ -620,7 +620,7 @@ if st.session_state['login_status']:
             df_solicitacoes = buscar_solicitacoes()
         
             # Exibe a tabela de solicitações
-            st.dataframe(df_solicitacoes)
+            st.table(df_solicitacoes)
             
             # Selectbox para escolher o ID da solicitação a ser excluída
             id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes['idadintamento'])
