@@ -319,7 +319,7 @@ if st.session_state['login_status']:
         st.sidebar.title("Administrador")
         admin_opcao = st.sidebar.radio(
             "Escolha uma opção:",
-            ('Inserir Solicitação', 'Ajustar Solicitação', 'Ver Histórico de Ajustes', 'Excluir Solicitação')
+            ('Inserir Solicitação', 'Ajustar Solicitação', 'Ver Histórico de Ajustes', 'Excluir Solicitação', 'Administração de Usuários')
         )
         
         # ====== Inserir Solicitação ======= #
@@ -659,6 +659,60 @@ if st.session_state['login_status']:
                     if conexao:
                         cursor.close()
                         conexao.close()
+        # ====== Administração de Usuários ======= #
+        elif admin_opcao == 'Administração de Usuários':
+            st.header("Administração de Usuários")
+            
+            # Carregar a tabela de usuários do banco de dados
+            df_solicitantes = carregar_tabela_solicitantes()
+        
+            # Exibir a tabela de usuários
+            st.dataframe(df_solicitantes)
+        
+            # ==== Inserir Novo Usuário ==== #
+            st.subheader("Inserir Novo Usuário")
+            novo_solicitante = st.text_input("Nome do Solicitante")
+            novo_login = st.text_input("Login de Rede")
+            nova_senha = st.text_input("Senha", type="password")
+            novo_tipo = st.selectbox("Tipo de Usuário", ["normal", "admin"])
+        
+            if st.button("Inserir Novo Usuário"):
+                sucesso = inserir_usuario(novo_solicitante, novo_login, nova_senha, novo_tipo)
+                if sucesso:
+                    st.success("Novo usuário inserido com sucesso!")
+                    st.experimental_rerun()
+                else:
+                    st.error("Falha ao inserir o novo usuário.")
+        
+            # ==== Alterar Usuário Existente ==== #
+            st.subheader("Alterar Usuário Existente")
+            id_alterar = st.text_input("ID do Usuário para Alterar")
+            novo_nome = st.text_input("Novo Nome do Solicitante")
+            novo_login = st.text_input("Novo Login de Rede")
+            nova_senha = st.text_input("Nova Senha", type="password")
+            novo_tipo = st.selectbox("Novo Tipo de Usuário", ["normal", "admin"])
+        
+            if st.button("Alterar Usuário"):
+                sucesso = alterar_usuario(id_alterar, novo_nome, novo_login, nova_senha, novo_tipo)
+                if sucesso:
+                    st.success("Usuário alterado com sucesso!")
+                    st.experimental_rerun()
+                else:
+                    st.error("Falha ao alterar o usuário.")
+        
+            # ==== Excluir Usuário Existente ==== #
+            st.subheader("Excluir Usuário Existente")
+            id_excluir = st.text_input("ID do Usuário para Excluir")
+        
+            if st.button("Excluir Usuário"):
+                confirmacao = st.checkbox("Confirmar Exclusão")
+                if confirmacao:
+                    sucesso = excluir_usuario(id_excluir)
+                    if sucesso:
+                        st.success("Usuário excluído com sucesso!")
+                        st.experimental_rerun()
+                    else:
+                        st.error("Falha ao excluir o usuário.")
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
