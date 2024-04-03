@@ -255,6 +255,27 @@ def buscar_ids_solicitacoes(solicitante=None, colaborador=None):
             cursor.close()
             conexao.close()
 
+# Função para buscar dados da solicitação por ID
+def buscar_dados_solicitacao_por_id(id_solicitacao):
+    try:
+        conexao = mysql.connector.connect(
+            host='viaduct.proxy.rlwy.net',
+            user='root',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+            database='railway',
+        )
+        cursor = conexao.cursor()
+        df_solicitacao = pd.read_sql(f"SELECT * FROM adiantamento WHERE idadiantamento = {id_solicitacao}", conexao)
+        return df_solicitacao
+    except Error as e:
+        print("Erro ao buscar dados da solicitação por ID:", e)
+        return pd.DataFrame()  # Retorna um DataFrame vazio em caso de erro
+    finally:
+        if conexao.is_connected():
+            cursor.close()
+            conexao.close()
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
