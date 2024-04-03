@@ -295,6 +295,26 @@ def carregar_tabela_solicitantes():
     df_solicitantes = pd.DataFrame(dados, columns=['idsolicitantes', 'solicitante', 'login', 'senha', 'tipo'])
     return df_solicitantes
 
+def inserir_usuario(solicitante, login, senha, tipo):
+    try:
+        # Conecte-se ao banco de dados e execute a inserção do novo usuário
+        # Substitua essas linhas pelo código real de conexão ao seu banco de dados e inserção SQL
+        conexao = mysql.connector.connect(
+            host='viaduct.proxy.rlwy.net',
+            user='root',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+            database='railway',
+        )
+        cursor = conexao.cursor()
+        cursor.execute("INSERT INTO solicitantes (solicitante, login, senha, tipo) VALUES (%s, %s, %s, %s)", (solicitante, login, senha, tipo))
+        conexao.commit()
+        conexao.close()
+        return True
+    except Exception as e:
+        print(f"Erro ao inserir usuário: {e}")
+        return False
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
