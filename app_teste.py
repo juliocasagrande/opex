@@ -222,6 +222,39 @@ def buscar_historico():
     conexao.close()
     return df_historico
 
+# Função para buscar IDs de solicitações
+def buscar_ids_solicitacoes(solicitante=None, colaborador=None):
+    try:
+        conexao = mysql.connector.connect(
+            host='viaduct.proxy.rlwy.net',
+            user='root',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+            database='railway',
+        )
+        cursor = conexao.cursor()
+        # Construir a consulta com base nos filtros aplicados
+        query = "SELECT DISTINCT idadiantamento FROM adiantamento"
+        conditions = []
+        if solicitante:
+            conditions.append(f"solicitante = '{solicitante}'")
+        if colaborador:
+            conditions.append(f"colaborador = '{colaborador}'")
+        if conditions:
+            query += " WHERE " + " AND ".join(conditions)
+        
+        # Executar a consulta
+        cursor.execute(query)
+        ids = cursor.fetchall()
+        return [id[0] for id in ids]
+    except Error as e:
+        print("Erro ao buscar os IDs das solicitações:", e)
+        return []
+    finally:
+        if conexao.is_connected():
+            cursor.close()
+            conexao.close()
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
