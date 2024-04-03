@@ -618,12 +618,15 @@ if st.session_state['login_status']:
             
             # Busca todas as solicitações para exibição na tabela
             df_solicitacoes = buscar_solicitacoes()
-        
-            # Exibe a tabela de solicitações
-            st.table(df_solicitacoes)
+            
+            # Remover a coluna de índice do DataFrame
+            df_sem_indice = df_solicitacoes.reset_index(drop=True)
+            
+            # Exibir o DataFrame sem a coluna de índice
+            st.dataframe(df_sem_indice)
             
             # Selectbox para escolher o ID da solicitação a ser excluída
-            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes['idadintamento'])
+            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes['idadiantamento'])
             
             # Se um ID foi selecionado, exibe os detalhes da solicitação
             if id_selecionado:
