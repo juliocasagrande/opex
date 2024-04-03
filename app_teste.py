@@ -261,6 +261,43 @@ def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_t
         print(f"Erro ao alterar usuário: {e}")
         return False
 
+# Excluir usuário
+def excluir_usuario(id_usuario):
+    try:
+        # Conecte-se ao banco de dados e execute a exclusão do usuário
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
+        
+        # Primeiro, selecionamos os dados do usuário que será excluído para que possam ser exibidos ao usuário antes da confirmação
+        cursor.execute("SELECT * FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
+        dados_usuario = cursor.fetchone()
+        
+        # Exibir os dados do usuário
+        print("Dados do usuário a ser excluído:")
+        print("ID:", dados_usuario[0])
+        print("Solicitante:", dados_usuario[1])
+        print("Login:", dados_usuario[2])
+        print("Senha:", dados_usuario[3])
+        print("Tipo:", dados_usuario[4])
+        
+        # Em seguida, solicitamos confirmação do usuário antes de continuar com a exclusão
+        confirmacao = input("Tem certeza de que deseja excluir este usuário? (s/n): ")
+        
+        if confirmacao.lower() == 's':
+            # Se confirmado, executamos a exclusão
+            cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
+            conexao.commit()
+            print("Usuário excluído com sucesso.")
+            return True
+        else:
+            print("Operação de exclusão cancelada.")
+            return False
+        
+        conexao.close()
+    except Exception as e:
+        print(f"Erro ao excluir usuário: {e}")
+        return False
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
@@ -659,7 +696,7 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            id_excluir = st.text_input("ID do Usuário para Excluir")
+            id_excluir = st.selectbox("ID do Usuário para Excluir", df_solicitantes["idsolicitantes"])
         
             if st.button("Excluir Usuário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
