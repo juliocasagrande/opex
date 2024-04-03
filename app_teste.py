@@ -276,6 +276,25 @@ def buscar_dados_solicitacao_por_id(id_solicitacao):
             cursor.close()
             conexao.close()
 
+def carregar_tabela_solicitantes():
+    # Conecte-se ao banco de dados e execute a consulta SQL para obter os dados da tabela de solicitantes
+    # Substitua essas linhas pelo código real de conexão ao seu banco de dados e consulta SQL
+    conexao = mysql.connector.connect(
+            host='viaduct.proxy.rlwy.net',
+            user='root',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+            database='railway',
+    )
+    cursor = conexao.cursor()
+    cursor.execute("SELECT * FROM solicitantes")
+    dados = cursor.fetchall()
+    conexao.close()
+
+    # Converta os dados em um DataFrame do pandas e retorne
+    df_solicitantes = pd.DataFrame(dados, columns=['idsolicitantes', 'solicitante', 'login', 'senha', 'tipo'])
+    return df_solicitantes
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
