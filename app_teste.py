@@ -623,7 +623,7 @@ if st.session_state['login_status']:
             st.dataframe(df_solicitacoes)
             
             # Selectbox para escolher o ID da solicitação a ser excluída
-            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes.index)
+            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes['idadintamento'])
             
             # Se um ID foi selecionado, exibe os detalhes da solicitação
             if id_selecionado:
