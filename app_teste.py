@@ -247,6 +247,20 @@ def inserir_usuario(solicitante, login, senha, tipo):
         print(f"Erro ao inserir usuário: {e}")
         return False
 
+def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_tipo):
+    try:
+        # Conecte-se ao banco de dados e execute a atualização do usuário
+        conexao = conectar_banco()
+        cursor = conexao.cursor()
+        cursor.execute("UPDATE solicitantes SET solicitante = %s, login = %s, senha = %s, tipo = %s WHERE idsolicitantes = %s",
+                       (novo_solicitante, novo_login, nova_senha, novo_tipo, id_usuario))
+        conexao.commit()
+        conexao.close()
+        return True
+    except Exception as e:
+        print(f"Erro ao alterar usuário: {e}")
+        return False
+
 # DEFINIÇÃO DE LISTAS #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
