@@ -8,7 +8,15 @@ import pandas as pd
 # Função para declarar as variáveis de conexão com o bando de dados
 def conectar_banco():
     try:
-        conexao = conectar_banco()
+        conexao = mysql.connector.connect(
+            host='viaduct.proxy.rlwy.net',
+            user='root',
+            port=58278,
+            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+            database='railway',
+            charset='utf8mb4',
+            collation='utf8mb4_unicode_ci'
+        )
         return conexao
     except Error as e:
         print(f"Erro ao conectar ao banco de dados: {e}")
