@@ -632,28 +632,28 @@ if st.session_state['login_status']:
                     st.write("Confirma a exclusão da seguinte solicitação?")
                     st.dataframe(df_solicitacao)
         
-                    # Botão para confirmar a exclusão
-                    if st.button("Confirmar Exclusão"):
-                        try:
-                            conexao = mysql.connector.connect(
-                                host='viaduct.proxy.rlwy.net',
-                                user='root',
-                                port=58278,
-                                password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                                database='railway'
-                            )
-                            cursor = conexao.cursor()
-                            query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
-                            cursor.execute(query, (id_selecionado,))
-                            conexao.commit()
-                            st.success("Solicitação excluída com sucesso!")
-                            st.experimental_rerun()
-                        except Error as e:
-                            st.error(f"Erro ao excluir a solicitação: {e}")
-                        finally:
-                            if conexao:
-                                cursor.close()
-                                conexao.close()
+            # Botão para confirmar a exclusão
+            if st.button("Confirmar Exclusão"):
+                try:
+                    conexao = mysql.connector.connect(
+                        host='viaduct.proxy.rlwy.net',
+                        user='root',
+                        port=58278,
+                        password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+                        database='railway'
+                    )
+                    cursor = conexao.cursor()
+                    query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
+                    cursor.execute(query, (id_selecionado,))
+                    conexao.commit()
+                    st.success("Solicitação excluída com sucesso!")
+                    st.experimental_rerun()
+                except Error as e:
+                    st.error(f"Erro ao excluir a solicitação: {e}")
+                finally:
+                    if conexao:
+                        cursor.close()
+                        conexao.close()
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
