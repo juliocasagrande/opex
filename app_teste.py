@@ -615,16 +615,24 @@ if st.session_state['login_status']:
         # ====== Excluir Solicitação ======= #
         elif admin_opcao == 'Excluir Solicitação':
             st.header("Excluir Solicitação de Adiantamento")
-        
-            ids_solicitacoes = buscar_ids_solicitacoes()  # Função que busca os IDs de solicitações
-            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', ids_solicitacoes)
             
+            # Busca todas as solicitações para exibição na tabela
+            df_solicitacoes = buscar_solicitacoes()
+        
+            # Exibe a tabela de solicitações
+            st.dataframe(df_solicitacoes)
+            
+            # Selectbox para escolher o ID da solicitação a ser excluída
+            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes.index)
+        
+            # Se um ID foi selecionado, exibe os detalhes da solicitação
             if id_selecionado:
                 df_solicitacao = buscar_dados_solicitacao_por_id(id_selecionado)
                 if not df_solicitacao.empty:
                     st.write("Confirma a exclusão da seguinte solicitação?")
                     st.dataframe(df_solicitacao)
         
+                    # Botão para confirmar a exclusão
                     if st.button("Confirmar Exclusão"):
                         try:
                             conexao = mysql.connector.connect(
