@@ -5,20 +5,20 @@ from datetime import datetime
 import time
 import pandas as pd
 
-
+# Função para declarar as variáveis de conexão com o bando de dados
+def conectar_banco():
+    try:
+        conexao = conectar_banco()
+        return conexao
+    except Error as e:
+        print(f"Erro ao conectar ao banco de dados: {e}")
+        return None
+        
 # Função para conectar ao banco de dados e verificar as credenciais do usuário
 def login(usuario, senha):
     conexao = None
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-            charset='utf8mb4',
-            collation='utf8mb4_unicode_ci'
-        )
+        conexao = conectar_banco()
         if conexao.is_connected():
             cursor = conexao.cursor()
             query = "SELECT login, senha, tipo FROM solicitantes WHERE login = %s AND senha = %s"
@@ -40,15 +40,7 @@ def login(usuario, senha):
 def pegar_valores_unicos():
     conexao = None 
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-            charset='utf8mb4',
-            collation='utf8mb4_unicode_ci'
-        )
+        conexao = conectar_banco()
         if conexao.is_connected():
             cursor = conexao.cursor()
             query = "SELECT DISTINCT nome FROM dados"
@@ -66,15 +58,7 @@ def pegar_valores_unicos():
 # Função para inserir solicitação
 def inserir_solicitacao(solicitante, data, colaborador, cc, data_inicio, data_termino, diarias, observacao, data_pag, banco_pag):
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-            charset='utf8mb4',
-            collation='utf8mb4_unicode_ci'
-        )
+        conexao = conectar_banco()
         if conexao.is_connected():
             cursor = conexao.cursor()
             # Obter o valor_diaria do colaborador da tabela dados
@@ -115,15 +99,7 @@ def inserir_solicitacao(solicitante, data, colaborador, cc, data_inicio, data_te
 # Buscar solicitações
 def buscar_solicitacoes(solicitante=None, colaborador=None):
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-            charset='utf8mb4',
-            collation='utf8mb4_unicode_ci'
-        )
+        conexao = conectar_banco()
         query = "SELECT * FROM adiantamento"
         conditions = []
         if solicitante:
@@ -145,13 +121,7 @@ def buscar_solicitacoes(solicitante=None, colaborador=None):
 # Buscar solicitantes
 def buscar_solicitantes():
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway'
-        )
+        conexao = conectar_banco()
         cursor = conexao.cursor()
         cursor.execute("SELECT DISTINCT solicitante FROM adiantamento")
         solicitantes = cursor.fetchall()
@@ -162,13 +132,7 @@ def buscar_solicitantes():
 # Buscar colaboradores
 def buscar_colaboradores():
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway'
-        )
+        conexao = conectar_banco()
         cursor = conexao.cursor()
         cursor.execute("SELECT DISTINCT colaborador FROM adiantamento")
         colaboradores = cursor.fetchall()
@@ -180,15 +144,7 @@ def buscar_colaboradores():
 def registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_alteracao):
     try:
         # Criando uma nova conexão dentro da função
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-            charset='utf8mb4',
-            collation='utf8mb4_unicode_ci'
-        )
+        conexao = conectar_banco()
         
         cursor = conexao.cursor()
         query = """
@@ -208,15 +164,7 @@ def registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_altera
 
 # Busca historico
 def buscar_historico():
-    conexao = mysql.connector.connect(
-        host='viaduct.proxy.rlwy.net',
-        user='root',
-        port=58278,
-        password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-        database='railway',
-        charset='utf8mb4',
-        collation='utf8mb4_unicode_ci'
-    )
+    conexao = conectar_banco()
     query = "SELECT * FROM historico ORDER BY data_hora DESC"
     df_historico = pd.read_sql(query, conexao)
     conexao.close()
@@ -225,13 +173,7 @@ def buscar_historico():
 # Função para buscar IDs de solicitações
 def buscar_ids_solicitacoes(solicitante=None, colaborador=None):
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-        )
+        conexao = conectar_banco()
         cursor = conexao.cursor()
         # Construir a consulta com base nos filtros aplicados
         query = "SELECT DISTINCT idadiantamento FROM adiantamento"
@@ -258,13 +200,7 @@ def buscar_ids_solicitacoes(solicitante=None, colaborador=None):
 # Função para buscar dados da solicitação por ID
 def buscar_dados_solicitacao_por_id(id_solicitacao):
     try:
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-        )
+        conexao = conectar_banco()
         cursor = conexao.cursor()
         df_solicitacao = pd.read_sql(f"SELECT * FROM adiantamento WHERE idadiantamento = {id_solicitacao}", conexao)
         return df_solicitacao
@@ -279,13 +215,7 @@ def buscar_dados_solicitacao_por_id(id_solicitacao):
 def carregar_tabela_solicitantes():
     # Conecte-se ao banco de dados e execute a consulta SQL para obter os dados da tabela de solicitantes
     # Substitua essas linhas pelo código real de conexão ao seu banco de dados e consulta SQL
-    conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-    )
+    conexao = conectar_banco()
     cursor = conexao.cursor()
     cursor.execute("SELECT * FROM solicitantes")
     dados = cursor.fetchall()
@@ -299,13 +229,7 @@ def inserir_usuario(solicitante, login, senha, tipo):
     try:
         # Conecte-se ao banco de dados e execute a inserção do novo usuário
         # Substitua essas linhas pelo código real de conexão ao seu banco de dados e inserção SQL
-        conexao = mysql.connector.connect(
-            host='viaduct.proxy.rlwy.net',
-            user='root',
-            port=58278,
-            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-            database='railway',
-        )
+        conexao = conectar_banco()
         cursor = conexao.cursor()
         cursor.execute("INSERT INTO solicitantes (solicitante, login, senha, tipo) VALUES (%s, %s, %s, %s)", (solicitante, login, senha, tipo))
         conexao.commit()
@@ -426,15 +350,7 @@ if st.session_state['login_status']:
                 col3.write(f"**Qtde de Diárias:** {diferenca_dias}")
 
                 # Conecta ao banco de dados para obter valor_diaria
-                conexao = mysql.connector.connect(
-                    host='viaduct.proxy.rlwy.net',
-                    user='root',
-                    port=58278,
-                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                    database='railway',
-                    charset='utf8mb4',
-                    collation='utf8mb4_unicode_ci'
-                )
+                conexao = conectar_banco()
                 cursor = conexao.cursor()
                 query_valor = "SELECT valor_diaria FROM dados WHERE nome = %s"
                 cursor.execute(query_valor, (colaborador_sol,))
@@ -588,15 +504,7 @@ if st.session_state['login_status']:
                             diferenca_dias = dif_dias + valor_per_ini + valor_per_fim
 
                             # Conecta ao banco de dados para obter valor_diaria
-                            conexao = mysql.connector.connect(
-                                host='viaduct.proxy.rlwy.net',
-                                user='root',
-                                port=58278,
-                                password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                                database='railway',
-                                charset='utf8mb4',
-                                collation='utf8mb4_unicode_ci'
-                            )
+                            conexao = conectar_banco()
                             cursor = conexao.cursor()
                             query_valor = "SELECT valor_diaria FROM dados WHERE nome = %s"
                             cursor.execute(query_valor, (novo_colaborador,))
@@ -611,13 +519,7 @@ if st.session_state['login_status']:
                         
                         if st.button("Salvar Alterações"):
                             try:
-                                conexao = mysql.connector.connect(
-                                    host='viaduct.proxy.rlwy.net',
-                                    user='root',
-                                    port=58278,
-                                    password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                                    database='railway'
-                                )
+                                conexao = conectar_banco()
                                 cursor = conexao.cursor()
                                 query = """UPDATE adiantamento SET solicitante = %s, data = %s, colaborador = %s, cc = %s, 
                                         data_inicio = %s, data_termino = %s, diarias = %s, valor_total = %s, 
@@ -677,13 +579,7 @@ if st.session_state['login_status']:
             # Botão para confirmar a exclusão
             if st.button("Confirmar Exclusão"):
                 try:
-                    conexao = mysql.connector.connect(
-                        host='viaduct.proxy.rlwy.net',
-                        user='root',
-                        port=58278,
-                        password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                        database='railway'
-                    )
+                    conexao = conectar_banco()
                     cursor = conexao.cursor()
                     query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
                     cursor.execute(query, (id_selecionado,))
@@ -755,7 +651,7 @@ if st.session_state['login_status']:
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
-        st.write("Tela do Usuário")
+        st.write("Tela do Usuário Normal")
         # Aqui você pode adicionar o conteúdo específico para o usuário normal
 
         # Inserir solicitação
