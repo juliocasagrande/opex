@@ -240,7 +240,7 @@ if not st.session_state['login_status']:
 
     st.title(':blue[Sistema de Gestão de Viagem]')
     st.markdown('Sistema criado para gerir solicitações de adiantamento para viagens')
-    st.markdown('Se a tela de login não estiver aparecendo, utilize a seta do canto superior esquerdo para acessá-la 😀')
+    st.markdown(':orange[Se a tela de login não estiver aparecendo, utilize a seta do canto superior esquerdo para acessá-la] 😀')
 
     st.sidebar.title("Login 🔐")
     usuario = st.sidebar.text_input("Usuário")
