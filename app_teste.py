@@ -614,46 +614,46 @@ if st.session_state['login_status']:
 
         # ====== Excluir Solicitação ======= #
         elif admin_opcao == 'Excluir Solicitação':
-        st.header("Excluir Solicitação de Adiantamento")
+            st.header("Excluir Solicitação de Adiantamento")
+            
+            # Busca todas as solicitações para exibição na tabela
+            df_solicitacoes = buscar_solicitacoes()
         
-        # Busca todas as solicitações para exibição na tabela
-        df_solicitacoes = buscar_solicitacoes()
-    
-        # Exibe a tabela de solicitações
-        st.dataframe(df_solicitacoes)
+            # Exibe a tabela de solicitações
+            st.dataframe(df_solicitacoes)
+            
+            # Selectbox para escolher o ID da solicitação a ser excluída
+            id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes.index)
         
-        # Selectbox para escolher o ID da solicitação a ser excluída
-        id_selecionado = st.selectbox('Escolha o ID da Solicitação para excluir', df_solicitacoes.index)
-    
-        # Se um ID foi selecionado, exibe os detalhes da solicitação
-        if id_selecionado:
-            df_solicitacao = buscar_dados_solicitacao_por_id(id_selecionado)
-            if not df_solicitacao.empty:
-                st.write("Confirma a exclusão da seguinte solicitação?")
-                st.dataframe(df_solicitacao)
-    
-                # Botão para confirmar a exclusão
-                if st.button("Confirmar Exclusão"):
-                    try:
-                        conexao = mysql.connector.connect(
-                            host='viaduct.proxy.rlwy.net',
-                            user='root',
-                            port=58278,
-                            password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
-                            database='railway'
-                        )
-                        cursor = conexao.cursor()
-                        query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
-                        cursor.execute(query, (id_selecionado,))
-                        conexao.commit()
-                        st.success("Solicitação excluída com sucesso!")
-                        st.experimental_rerun()
-                    except Error as e:
-                        st.error(f"Erro ao excluir a solicitação: {e}")
-                    finally:
-                        if conexao:
-                            cursor.close()
-                            conexao.close()
+            # Se um ID foi selecionado, exibe os detalhes da solicitação
+            if id_selecionado:
+                df_solicitacao = buscar_dados_solicitacao_por_id(id_selecionado)
+                if not df_solicitacao.empty:
+                    st.write("Confirma a exclusão da seguinte solicitação?")
+                    st.dataframe(df_solicitacao)
+        
+                    # Botão para confirmar a exclusão
+                    if st.button("Confirmar Exclusão"):
+                        try:
+                            conexao = mysql.connector.connect(
+                                host='viaduct.proxy.rlwy.net',
+                                user='root',
+                                port=58278,
+                                password='tcDWrsUDzZFiREsUBpOUivzDVzpvSfFJ',
+                                database='railway'
+                            )
+                            cursor = conexao.cursor()
+                            query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
+                            cursor.execute(query, (id_selecionado,))
+                            conexao.commit()
+                            st.success("Solicitação excluída com sucesso!")
+                            st.experimental_rerun()
+                        except Error as e:
+                            st.error(f"Erro ao excluir a solicitação: {e}")
+                        finally:
+                            if conexao:
+                                cursor.close()
+                                conexao.close()
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
