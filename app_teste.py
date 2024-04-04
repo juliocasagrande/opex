@@ -622,7 +622,7 @@ if st.session_state['login_status']:
             
             # Carregar a tabela de usuários do banco de dados
             df_solicitantes = carregar_tabela_solicitantes()
-        
+            df_solicitantes = df_solicitantes.set_index('idsolicitantes')
             # Exibir a tabela de usuários
             st.dataframe(df_solicitantes)
         
@@ -643,7 +643,8 @@ if st.session_state['login_status']:
         
             # ==== Alterar Usuário Existente ==== #
             st.subheader("Alterar Usuário Existente")
-            id_alterar = st.text_input("ID do Usuário para Alterar")
+            ids_solicitantes = df_solicitantes["idsolicitantes"].tolist()
+            id_alterar = st.selectbox("ID do Usuário para Alterar", ids_solicitantes)
             novo_nome = st.text_input("Novo Nome do Solicitante")
             novo_login = st.text_input("Novo Login de Rede")
             nova_senha = st.text_input("Nova Senha", type="password")
