@@ -90,7 +90,7 @@ def inserir_solicitacao(solicitante, data, colaborador, cc, data_inicio, data_te
             id_adiantamento = cursor.lastrowid
 
             # Registrar no histórico
-            detalhes_alteracao = "Solicitação"
+            detalhes_alteracao = f"Inserção da solicitação no data: {data}\nColaborador: {colaborador}\nCentro de Custo: {cc}"
             tipo_operacao = "Inserção"
             usuario = st.session_state['usuario']  # Asumindo que o usuário logado é acessível através de st.session_state['usuario']
             registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_alteracao)
