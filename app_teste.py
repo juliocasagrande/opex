@@ -673,7 +673,7 @@ if st.session_state['login_status']:
                         cursor = conexao.cursor()
             
                         # Executa a exclusão do usuário
-                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (ids_excluir,))
+                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_excluir,))
                         conexao.commit()
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
