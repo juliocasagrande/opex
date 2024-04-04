@@ -661,8 +661,8 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            ids_excluir = df_solicitantes.index.tolist()
-            id_excluir = st.selectbox("ID do Usuário para Excluir", ids_excluir)
+            solicitantes_excluir = df_solicitantes['solicitante'].tolist()
+            solicitante_excluir = st.selectbox("Nome do Usuário para Excluir", solicitantes_excluir)
             
             if st.button("Excluir Usário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
@@ -673,7 +673,7 @@ if st.session_state['login_status']:
                         cursor = conexao.cursor()
             
                         # Executa a exclusão do usuário
-                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_excluir,))
+                        cursor.execute("DELETE FROM solicitantes WHERE solicitante = %s", (solicitante_excluir,))
                         conexao.commit()
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
