@@ -280,10 +280,10 @@ def excluir_solicitacao(id_selecionado):
             st.success("Solicitação excluída com sucesso!")
 
             # Registrar no histórico
-            detalhes_alteracao = "Solicitação"
+            detalhes_alteracao = f"Item {id_selecionado} excluído.]"
             tipo_operacao = "Exclusão"
             usuario = st.session_state['usuario']  # Assumindo que o usuário logado é acessível através de st.session_state['usuario']
-            registrar_historico(id_selecionado, usuario, tipo_operacao, detalhes_alteracao, dados_solicitacao)
+            registrar_historico(id_adiantamento, usuario, tipo_operacao, detalhes_alteracao)
 
             return True
     except Error as e:
