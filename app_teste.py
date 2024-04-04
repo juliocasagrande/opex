@@ -261,6 +261,39 @@ def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_t
         print(f"Erro ao alterar usuário: {e}")
         return False
 
+# Função para excluir solicitação
+def excluir_solicitacao(id_selecionado):
+    try:
+        conexao = conectar_banco()
+        if conexao.is_connected():
+            cursor = conexao.cursor()
+
+            # Busca os dados da solicitação antes de excluí-la
+            query_buscar = "SELECT * FROM adiantamento WHERE idadiantamento = %s"
+            cursor.execute(query_buscar, (id_selecionado,))
+            dados_solicitacao = cursor.fetchone()
+
+            # Excluir a solicitação
+            query_excluir = "DELETE FROM adiantamento WHERE idadiantamento = %s"
+            cursor.execute(query_excluir, (id_selecionado,))
+            conexao.commit()
+            st.success("Solicitação excluída com sucesso!")
+
+            # Registrar no histórico
+            detalhes_alteracao = "Solicitação"
+            tipo_operacao = "Exclusão"
+            usuario = st.session_state['usuario']  # Assumindo que o usuário logado é acessível através de st.session_state['usuario']
+            registrar_historico(id_selecionado, usuario, tipo_operacao, detalhes_alteracao, dados_solicitacao)
+
+            return True
+    except Error as e:
+        print("Erro ao conectar ao MySQL", e)
+        return False
+    finally:
+        if conexao.is_connected():
+            cursor.close()
+            conexao.close()
+
 # =========== DEFINIÇÃO DE LISTAS ================ #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
@@ -601,22 +634,12 @@ if st.session_state['login_status']:
             
             # Botão para confirmar a exclusão
             if st.button("Confirmar Exclusão"):
-                try:
-                    conexao = conectar_banco()
-                    cursor = conexao.cursor()
-                    query = "DELETE FROM adiantamento WHERE idadiantamento = %s"
-                    cursor.execute(query, (id_selecionado,))
-                    conexao.commit()
-                    st.success("Solicitação excluída com sucesso!")
-                    
+                if excluir_solicitacao(id_selecionado):
                     # Recarrega a página para atualizar a tabela após a exclusão
                     st.experimental_rerun()
-                except Error as e:
-                    st.error(f"Erro ao excluir a solicitação: {e}")
-                finally:
-                    if conexao:
-                        cursor.close()
-                        conexao.close()
+                else:
+                    st.error("Erro ao excluir a solicitação.")
+                        
         # ====== Administração de Usuários ======= #
         elif admin_opcao == 'Administração de Usuários':
             st.header("Administração de Usuários")
