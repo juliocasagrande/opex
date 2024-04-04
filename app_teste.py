@@ -643,7 +643,7 @@ if st.session_state['login_status']:
         
             # ==== Alterar Usuário Existente ==== #
             st.subheader("Alterar Usuário Existente")
-            ids_solicitantes = df_solicitantes["idsolicitantes"].tolist()
+            ids_solicitantes = df_solicitantes.index.tolist()
             id_alterar = st.selectbox("ID do Usuário para Alterar", ids_solicitantes)
             novo_nome = st.text_input("Novo Nome do Solicitante")
             novo_login = st.text_input("Novo Login de Rede")
@@ -660,7 +660,7 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            ids_solicitantes = df_solicitantes["idsolicitantes"].tolist()
+            ids_solicitantes = df_solicitantes.index.tolist()
             id_excluir = st.selectbox("ID do Usuário para Excluir", ids_solicitantes)
             
             if st.button("Excluir Usário"):
