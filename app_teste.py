@@ -665,26 +665,24 @@ if st.session_state['login_status']:
             solicitante_excluir = st.selectbox("Nome do Usuário para Excluir", solicitantes_excluir)
             
             if st.button("Excluir Usário"):
-                confirmacao = st.checkbox("Confirmar Exclusão")
-                if confirmacao:
-                    try:
-                        # Conecta ao banco de dados
-                        conexao = conectar_banco()
-                        cursor = conexao.cursor()
-            
-                        # Executa a exclusão do usuário
-                        cursor.execute("DELETE FROM solicitantes WHERE solicitante = %s", (solicitante_excluir,))
-                        conexao.commit()
-                        st.success("Usuário excluído com sucesso!")
-                        st.experimental_rerun()
-            
-                    except Exception as e:
-                        st.error(f"Falha ao excluir o usuário: {e}")
-            
-                    finally:
-                        # Fecha a conexão com o banco de dados
-                        if conexao:
-                            conexao.close()
+                try:
+                    # Conecta ao banco de dados
+                    conexao = conectar_banco()
+                    cursor = conexao.cursor()
+        
+                    # Executa a exclusão do usuário
+                    cursor.execute("DELETE FROM solicitantes WHERE solicitante = %s", (solicitante_excluir,))
+                    conexao.commit()
+                    st.success("Usuário excluído com sucesso!")
+                    st.experimental_rerun()
+        
+                except Exception as e:
+                    st.error(f"Falha ao excluir o usuário: {e}")
+        
+                finally:
+                    # Fecha a conexão com o banco de dados
+                    if conexao:
+                        conexao.close()
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
