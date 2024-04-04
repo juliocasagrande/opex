@@ -260,45 +260,31 @@ def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_t
     except Exception as e:
         print(f"Erro ao alterar usuário: {e}")
         return False
-
-# Excluir usuário
-def excluir_usuario(indice_selecionado):
+        
+# Função para excluir usuário com base no id
+def excluir_usuario(id_usuario):
     try:
-        # Conecte-se ao banco de dados e execute a exclusão do usuário
+        # Conecta ao banco de dados e executa a exclusão do usuário
         conexao = conectar_banco()
         cursor = conexao.cursor()
-        
-        # Primeiro, selecionamos os dados do usuário que será excluído para que possam ser exibidos ao usuário antes da confirmação
-        cursor.execute("SELECT * FROM solicitantes LIMIT %s, 1", (indice_selecionado,))
-        dados_usuario = cursor.fetchone()
-        
-        # Exibir os dados do usuário
-        print("Dados do usuário a ser excluído:")
-        print("ID:", dados_usuario[0])
-        print("Solicitante:", dados_usuario[1])
-        print("Login:", dados_usuario[2])
-        print("Senha:", dados_usuario[3])
-        print("Tipo:", dados_usuario[4])
-        
-        # Em seguida, solicitamos confirmação do usuário antes de continuar com a exclusão
-        confirmacao = input("Tem certeza de que deseja excluir este usuário? (s/n): ")
-        
-        if confirmacao.lower() == 's':
-            # Se confirmado, executamos a exclusão
-            cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (dados_usuario[0],))
-            conexao.commit()
-            print("Usuário excluído com sucesso.")
-            return True
-        else:
-            print("Operação de exclusão cancelada.")
-            return False
-        
-        conexao.close()
+
+        # Executa a exclusão do usuário
+        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
+        conexao.commit()
+        print("Usuário excluído com sucesso.")
+        return True
+
     except Exception as e:
         print(f"Erro ao excluir usuário: {e}")
         return False
 
-# DEFINIÇÃO DE LISTAS #
+    finally:
+        # Fecha a conexão com o banco de dados
+        if conexao:
+            conexao.close()
+
+
+# =========== DEFINIÇÃO DE LISTAS ================ #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
 tipo_adiantamento = ['Diária']
 usuarios_unicos = pegar_valores_unicos()
@@ -696,12 +682,13 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            indice_selecionado = st.selectbox("Índice do Usuário para Excluir", range(len(df_solicitantes)))
-        
+            ids_solicitantes = df_solicitantes["idsolicitantes"].tolist()
+            id_excluir = st.selectbox("ID do Usuário para Excluir", ids_solicitantes)
+            
             if st.button("Excluir Usuário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
                 if confirmacao:
-                    sucesso = excluir_usuario(indice_selecionado)
+                    sucesso = excluir_usuario(id_excluir)
                     if sucesso:
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
