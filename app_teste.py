@@ -573,6 +573,7 @@ if st.session_state['login_status']:
         elif admin_opcao == 'Ver Histórico de Ajustes':
             st.header("Histórico de Ajustes")
             df_historico = buscar_historico()
+            df_historico = df_historico.set_index('id_historico')
             st.dataframe(df_historico)
 
         # ====== Excluir Solicitação ======= #
@@ -583,7 +584,7 @@ if st.session_state['login_status']:
             df_solicitacoes = buscar_solicitacoes()
             
             # Remover a coluna de índice do DataFrame
-            df_sem_indice = df_solicitacoes.reset_index(drop=True)
+            df_sem_indice = df_solicitacoes.set_index('idadiantamento')
             
             # Exibir o DataFrame sem a coluna de índice
             st.dataframe(df_sem_indice)
@@ -660,8 +661,8 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            ids_solicitantes = df_solicitantes.index.tolist()
-            id_excluir = st.selectbox("ID do Usuário para Excluir", ids_solicitantes)
+            ids_excluir = df_solicitantes.index.tolist()
+            id_excluir = st.selectbox("ID do Usuário para Excluir", ids_excluir)
             
             if st.button("Excluir Usário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
@@ -672,7 +673,7 @@ if st.session_state['login_status']:
                         cursor = conexao.cursor()
             
                         # Executa a exclusão do usuário
-                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_excluir,))
+                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (ids_excluir,))
                         conexao.commit()
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
