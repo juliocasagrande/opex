@@ -628,61 +628,61 @@ if st.session_state['login_status']:
             st.dataframe(df_solicitantes)
         
             # ==== Inserir Novo Usuário ==== #
-            st.subheader("Inserir Novo Usuário")
-            novo_solicitante = st.text_input("Nome do Solicitante")
-            novo_login = st.text_input("Login de Rede")
-            nova_senha = st.text_input("Senha", type="password")
-            novo_tipo = st.selectbox("Tipo de Usuário", ["normal", "admin"])
-        
-            if st.button("Inserir Novo Usuário"):
-                sucesso = inserir_usuario(novo_solicitante, novo_login, nova_senha, novo_tipo)
-                if sucesso:
-                    st.success("Novo usuário inserido com sucesso!")
-                    st.experimental_rerun()
-                else:
-                    st.error("Falha ao inserir o novo usuário.")
-        
-            # ==== Alterar Usuário Existente ==== #
-            st.subheader("Alterar Usuário Existente")
-            ids_solicitantes = df_solicitantes.index.tolist()
-            id_alterar = st.selectbox("ID do Usuário para Alterar", ids_solicitantes)
-            novo_nome = st.text_input("Novo Nome do Solicitante")
-            novo_login = st.text_input("Novo Login de Rede")
-            nova_senha = st.text_input("Nova Senha", type="password")
-            novo_tipo = st.selectbox("Novo Tipo de Usuário", ["normal", "admin"])
-        
-            if st.button("Alterar Usuário"):
-                sucesso = alterar_usuario(id_alterar, novo_nome, novo_login, nova_senha, novo_tipo)
-                if sucesso:
-                    st.success("Usuário alterado com sucesso!")
-                    st.experimental_rerun()
-                else:
-                    st.error("Falha ao alterar o usuário.")
-        
-            # ==== Excluir Usuário Existente ==== #
-            st.subheader("Excluir Usuário Existente")
-            solicitantes_excluir = df_solicitantes['solicitante'].tolist()
-            solicitante_excluir = st.selectbox("Nome do Usuário para Excluir", solicitantes_excluir)
+            with st.expander("Inserir Novo Usuário"):
+                novo_solicitante = st.text_input("Nome do Solicitante")
+                novo_login = st.text_input("Login de Rede")
+                nova_senha = st.text_input("Senha", type="password")
+                novo_tipo = st.selectbox("Tipo de Usuário", ["normal", "admin"])
             
-            if st.button("Excluir Usário"):
-                try:
-                    # Conecta ao banco de dados
-                    conexao = conectar_banco()
-                    cursor = conexao.cursor()
-        
-                    # Executa a exclusão do usuário
-                    cursor.execute("DELETE FROM solicitantes WHERE solicitante = %s", (solicitante_excluir,))
-                    conexao.commit()
-                    st.success("Usuário excluído com sucesso!")
-                    st.experimental_rerun()
-        
-                except Exception as e:
-                    st.error(f"Falha ao excluir o usuário: {e}")
-        
-                finally:
-                    # Fecha a conexão com o banco de dados
-                    if conexao:
-                        conexao.close()
+                if st.button("Inserir Novo Usuário"):
+                    sucesso = inserir_usuario(novo_solicitante, novo_login, nova_senha, novo_tipo)
+                    if sucesso:
+                        st.success("Novo usuário inserido com sucesso!")
+                        st.experimental_rerun()
+                    else:
+                        st.error("Falha ao inserir o novo usuário.")
+            
+            # ==== Alterar Usuário Existente ==== #
+            with st.expander("Alterar Usuário Existente"):
+                ids_solicitantes = df_solicitantes.index.tolist()
+                id_alterar = st.selectbox("ID do Usuário para Alterar", ids_solicitantes)
+                novo_nome = st.text_input("Novo Nome do Solicitante")
+                novo_login = st.text_input("Novo Login de Rede")
+                nova_senha = st.text_input("Nova Senha", type="password")
+                novo_tipo = st.selectbox("Novo Tipo de Usuário", ["normal", "admin"])
+            
+                if st.button("Alterar Usuário"):
+                    sucesso = alterar_usuario(id_alterar, novo_nome, novo_login, nova_senha, novo_tipo)
+                    if sucesso:
+                        st.success("Usuário alterado com sucesso!")
+                        st.experimental_rerun()
+                    else:
+                        st.error("Falha ao alterar o usuário.")
+            
+            # ==== Excluir Usuário Existente ==== #
+            with st.expander("Excluir Usuário Existente"):
+                solicitantes_excluir = df_solicitantes['solicitante'].tolist()
+                solicitante_excluir = st.selectbox("Nome do Usuário para Excluir", solicitantes_excluir)
+                
+                if st.button("Excluir Usário"):
+                    try:
+                        # Conecta ao banco de dados
+                        conexao = conectar_banco()
+                        cursor = conexao.cursor()
+            
+                        # Executa a exclusão do usuário
+                        cursor.execute("DELETE FROM solicitantes WHERE solicitante = %s", (solicitante_excluir,))
+                        conexao.commit()
+                        st.success("Usuário excluído com sucesso!")
+                        st.experimental_rerun()
+            
+                    except Exception as e:
+                        st.error(f"Falha ao excluir o usuário: {e}")
+            
+                    finally:
+                        # Fecha a conexão com o banco de dados
+                        if conexao:
+                            conexao.close()
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
