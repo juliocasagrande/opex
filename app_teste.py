@@ -260,29 +260,6 @@ def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_t
     except Exception as e:
         print(f"Erro ao alterar usuário: {e}")
         return False
-        
-# Função para excluir usuário com base no id
-def excluir_usuario(id_usuario):
-    try:
-        # Conecta ao banco de dados e executa a exclusão do usuário
-        conexao = conectar_banco()
-        cursor = conexao.cursor()
-
-        # Executa a exclusão do usuário
-        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
-        conexao.commit()
-        print("Usuário excluído com sucesso.")
-        return True
-
-    except Exception as e:
-        print(f"Erro ao excluir usuário: {e}")
-        return False
-
-    finally:
-        # Fecha a conexão com o banco de dados
-        if conexao:
-            conexao.close()
-
 
 # =========== DEFINIÇÃO DE LISTAS ================ #
 centro_custos = ['Bahia FSA', 'Ipubi', 'Paraíba', 'Russas', 'Sul']
@@ -685,15 +662,27 @@ if st.session_state['login_status']:
             ids_solicitantes = df_solicitantes["idsolicitantes"].tolist()
             id_excluir = st.selectbox("ID do Usuário para Excluir", ids_solicitantes)
             
-            if st.button("Excluir Usuário"):
+            if st.button("Excluir Usário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
                 if confirmacao:
-                    sucesso = excluir_usuario(id_excluir)
-                    if sucesso:
+                    try:
+                        # Conecta ao banco de dados
+                        conexao = conectar_banco()
+                        cursor = conexao.cursor()
+            
+                        # Executa a exclusão do usuário
+                        cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_excluir,))
+                        conexao.commit()
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
-                    else:
-                        st.error("Falha ao excluir o usuário.")
+            
+                    except Exception as e:
+                        st.error(f"Falha ao excluir o usuário: {e}")
+            
+                    finally:
+                        # Fecha a conexão com o banco de dados
+                        if conexao:
+                            conexao.close()
 
 # ============= TELA USUARIO ================= #
     elif st.session_state['tipo_usuario'] == 'normal':
