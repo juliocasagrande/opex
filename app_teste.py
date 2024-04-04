@@ -262,14 +262,14 @@ def alterar_usuario(id_usuario, novo_solicitante, novo_login, nova_senha, novo_t
         return False
 
 # Excluir usuário
-def excluir_usuario(id_usuario):
+def excluir_usuario(indice_selecionado):
     try:
         # Conecte-se ao banco de dados e execute a exclusão do usuário
         conexao = conectar_banco()
         cursor = conexao.cursor()
         
         # Primeiro, selecionamos os dados do usuário que será excluído para que possam ser exibidos ao usuário antes da confirmação
-        cursor.execute("SELECT * FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
+        cursor.execute("SELECT * FROM solicitantes LIMIT %s, 1", (indice_selecionado,))
         dados_usuario = cursor.fetchone()
         
         # Exibir os dados do usuário
@@ -285,7 +285,7 @@ def excluir_usuario(id_usuario):
         
         if confirmacao.lower() == 's':
             # Se confirmado, executamos a exclusão
-            cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (id_usuario,))
+            cursor.execute("DELETE FROM solicitantes WHERE idsolicitantes = %s", (dados_usuario[0],))
             conexao.commit()
             print("Usuário excluído com sucesso.")
             return True
@@ -696,12 +696,12 @@ if st.session_state['login_status']:
         
             # ==== Excluir Usuário Existente ==== #
             st.subheader("Excluir Usuário Existente")
-            id_excluir = st.selectbox("ID do Usuário para Excluir", df_solicitantes["idsolicitantes"])
+            indice_selecionado = st.selectbox("Índice do Usuário para Excluir", range(len(df_solicitantes)))
         
             if st.button("Excluir Usuário"):
                 confirmacao = st.checkbox("Confirmar Exclusão")
                 if confirmacao:
-                    sucesso = excluir_usuario(id_excluir)
+                    sucesso = excluir_usuario(indice_selecionado)
                     if sucesso:
                         st.success("Usuário excluído com sucesso!")
                         st.experimental_rerun()
